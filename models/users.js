@@ -1,19 +1,14 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var passportLocalMongoose = require('passport-local-mongoose')
+var passportLocalMongoose = require('passport-local-mongoose');
+const residential = require('./residential');
 
 var User = new Schema({
     residential_id:{
-        type: Number,
-        default:''
+        type: mongoose.Schema.Types.ObjectId,
+        ref : residential
     },
-    numberplate:[
-        {
-        type: String,
-        default:''
-        }
-    ],
     password:{
         type: String,
         default:''

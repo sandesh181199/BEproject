@@ -94,20 +94,21 @@ visitorRouter.route('/postusers')
 })
 
 
-visitorRouter.route('/residential')
+visitorRouter.route('/addSociety')
 .post((req, res, next) => {
-    console.log("Inside postusers")
-    var {residential_id, society_name, address, pincode} = req.body
-    const newResident = {
-        residential_id, society_name, address, pincode
+    console.log("Inside Add Society")
+    var {society_name, address, pincode} = req.body
+    const newSociety = {
+        society_name, address, pincode
     }
-    residential.create(newResident)
-    .then(resident=> {
-        console.log("Resident created" + resident);
+    residential.create(newSociety)
+    .then(data=> {
+        console.log("Society created" + data);
         res.statusCode = 200;
         res.setHeader('content-type','application/json');
-        res.json(resident);
+        res.json(data);
     },(err) => next(err)).catch((err)=> next(err))
 })
+
 
 module.exports = visitorRouter;

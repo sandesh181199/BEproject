@@ -11,22 +11,6 @@ var Visitor = new Schema({
         type: Number,
         default:''
     },
-    firstname : {
-        type : String,
-        default : ''
-    },
-    lastname : {
-        type : String,
-        default : ''
-    },
-    email_id:{
-        type:String,
-        default :''
-    },
-    mobile_number:{
-        type:Number,
-        default:''
-    },
 },{
     timestamps:true
 });
