@@ -8,9 +8,8 @@ var Visitor = new Schema({
         default:''
     },
     residential_id:{
-        type: Number,
-        default:''
-    },
+        type: mongoose.Schema.Types.ObjectId,
+    }
 },{
     timestamps:true
 });

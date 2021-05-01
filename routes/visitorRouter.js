@@ -3,16 +3,12 @@ const bodyParser = require('body-parser');
 const User = require('../models/users');
 const residential = require('../models/residential');
 const visitors = require('../models/visitors');
+const numberplate = require('../models/visitors');
 // const cors = require('./cors');
 
 const visitorRouter = express.Router();
 visitorRouter.use(bodyParser.json());
 
-//reqest.body.numberplat="2347"
-//request.body.residential_id="2",
-//findall(numberplate:number)
-//true
-//false
 
 visitorRouter.route('/checkvisitors')
 .post((req, res, next) => {
@@ -110,5 +106,21 @@ visitorRouter.route('/addSociety')
     },(err) => next(err)).catch((err)=> next(err))
 })
 
+
+visitorRouter.route('/newvisitor')
+.post((req, res, next) => {
+    console.log("Inside Visitor")
+    var {visitor_number_plate, residential_id} = req.body
+    const newVisitor = {
+        visitor_number_plate, residential_id
+    }
+    numberplate.create(newVisitor)
+    .then(data=> {
+        console.log("Society created" + data);
+        res.statusCode = 200;
+        res.setHeader('content-type','application/json');
+        res.json(data);
+    },(err) => next(err)).catch((err)=> next(err))
+})
 
 module.exports = visitorRouter;

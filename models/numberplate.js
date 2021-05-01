@@ -8,7 +8,7 @@ var numberplate = new Schema({
         type: String,
         default:''
     },
-    usr_id : {
+    user_id : {
         type : mongoose.Schema.Types.ObjectId,
         ref : users
     }
