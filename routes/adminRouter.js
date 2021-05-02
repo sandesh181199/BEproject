@@ -21,7 +21,8 @@ router.route('/register')
                 lastname: req.body.lastname,
                 email_id: req.body.email_id,
                 mobile_number: req.body.mobile_number,
-                admin: true
+                admin: true,
+                verified : true
             }
             users.create(newUser).then(data => {
                 console.log("Society created" + data);
@@ -33,40 +34,13 @@ router.route('/register')
     })
 
 
-    router.route('/login')
-    .post((req, res, next) => {
-        console.log('Inside AdminRouter Login');
-        users.find({mobile_number : req.body.mobile_number}).then(data =>{
-            bcrypt.compare(req.body.password, data[0].password, (error, verify) =>{
-                if (error) {
-                    console.log(error);
-                    res.status(503).json({
-                        message: "Bcryptjs Error"
-                    });
-                } else if (verify === false) {
-                    res.status(400).json({
-                        message: "Wrong Username or Password"
-                    });
-                } else {
-                    jwt.sign({
-                        userid: data[0]._id,
-                        email_id : data[0].email_id,
-                        mobile_number : data[0].mobile_number
-                    }, config.secretKey, (error, token) => {
-                        if (error) {
-                            console.log(error);
-                            res.status(500).json({ message: "Token generation Failed" });
-                        } else {
-                            // token generated
-                            console.log('Token generated');
-                            res.status(200).json({token : token});
-                        }
-                    });
-                }
-            })
-        })
-    })
+//Dashboard
 
+//getAllUsers
+
+//getAllVisitors
+
+//get Unverified users
 
 
 module.exports.router = router;

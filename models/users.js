@@ -34,6 +34,10 @@ var User = new Schema({
     admin :{
         type : Boolean,
         default : false
+    },
+    verified : {
+        type : Boolean,
+        default : false
     }
 });
 

@@ -21,7 +21,8 @@ router.route('/register')
                 lastname: req.body.lastname,
                 email_id: req.body.email_id,
                 mobile_number: req.body.mobile_number,
-                admin: false
+                admin: false,
+                verified: flase
             }
             users.create(newUser).then(data => {
                 console.log("New User Registered" + data);
@@ -33,11 +34,11 @@ router.route('/register')
     })
 
 
-    router.route('/login')
+router.route('/login')
     .post((req, res, next) => {
         console.log('Inside UserRouter Login');
-        users.find({mobile_number : req.body.mobile_number}).then(data =>{
-            bcrypt.compare(req.body.password, data[0].password, (error, verify) =>{
+        users.find({ mobile_number: req.body.mobile_number }).then(data => {
+            bcrypt.compare(req.body.password, data[0].password, (error, verify) => {
                 if (error) {
                     console.log(error);
                     res.status(503).json({
@@ -50,8 +51,9 @@ router.route('/register')
                 } else {
                     jwt.sign({
                         userid: data[0]._id,
-                        email_id : data[0].email_id,
-                        mobile_number : data[0].mobile_number
+                        email_id: data[0].email_id,
+                        mobile_number: data[0].mobile_number,
+                        admin : data[0].admin
                     }, config.secretKey, (error, token) => {
                         if (error) {
                             console.log(error);
@@ -59,7 +61,7 @@ router.route('/register')
                         } else {
                             // token generated
                             console.log('Token generated');
-                            res.status(200).json({token : token});
+                            res.status(200).json({ token: token, isAdmin : data[0].admin });
                         }
                     });
                 }
