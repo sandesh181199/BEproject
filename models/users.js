@@ -11,7 +11,7 @@ var User = new Schema({
     },
     password:{
         type: String,
-        default:''
+        default:'' 
     },
     firstname : {
         type : String,

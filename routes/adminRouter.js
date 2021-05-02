@@ -21,17 +21,29 @@ router.route('/register')
                 lastname: req.body.lastname,
                 email_id: req.body.email_id,
                 mobile_number: req.body.mobile_number,
-                admin: true,
-                verified : true
+                admin: true
             }
             users.create(newUser).then(data => {
-                console.log("Society created" + data);
+                console.log("New user  created" + data);
                 res.statusCode = 200;
                 res.setHeader('content-type', 'application/json');
                 res.json(data);
             }, (err) => next(err)).catch((err) => next(err))
         })
     })
+
+router.route('/getallusers')
+.get((req,res,next)=> {
+    console.log("Inside admin router getallusers");
+
+    users.find().then(user=>{
+        console.log(user)
+        res.statusCode = 200;
+        res.setHeader('content-type', 'application/json');
+        res.json(data);
+    },  (err) => next(err)).catch((err) => next(err))
+
+})
 
 
 //Dashboard

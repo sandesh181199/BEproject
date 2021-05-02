@@ -9,4 +9,4 @@ router.use('/admin', admin.router);
 
 var user = require('./userRouter');
 router.use('/user', user.router);
-module.exports.router = router;
+module.exports.router = router; 
