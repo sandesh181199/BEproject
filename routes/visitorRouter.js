@@ -6,11 +6,11 @@ const visitors = require('../models/visitors');
 const numberplate = require('../models/visitors');
 // const cors = require('./cors');
 
-const visitorRouter = express.Router();
-visitorRouter.use(bodyParser.json());
+const router = express.Router();
+router.use(bodyParser.json());
 
 
-visitorRouter.route('/checkvisitors')
+router.route('/checkvisitors')
 .post((req, res, next) => {
     // console.log("Inside checkvisitor")
     var numberplate = req.body.numberplate;
@@ -73,7 +73,7 @@ User.find({numberplate:numberplate})
 })
 
 
-visitorRouter.route('/postusers')
+router.route('/postusers')
 .post((req, res, next) => {
     console.log("Inside postusers")
     var {residential_id, numberplate, password, firstname, lastname, email_id, mobile_number} = req.body
@@ -90,7 +90,7 @@ visitorRouter.route('/postusers')
 })
 
 
-visitorRouter.route('/addSociety')
+router.route('/addSociety')
 .post((req, res, next) => {
     console.log("Inside Add Society")
     var {society_name, address, pincode} = req.body
@@ -107,7 +107,7 @@ visitorRouter.route('/addSociety')
 })
 
 
-visitorRouter.route('/newvisitor')
+router.route('/newvisitor')
 .post((req, res, next) => {
     console.log("Inside Visitor")
     var {visitor_number_plate, residential_id} = req.body
@@ -123,4 +123,4 @@ visitorRouter.route('/newvisitor')
     },(err) => next(err)).catch((err)=> next(err))
 })
 
-module.exports = visitorRouter;
+module.exports.router = router;

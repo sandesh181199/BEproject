@@ -4,7 +4,7 @@ const http = require('http');
 var mongoose = require('mongoose');
 var app = express();
 
-var visitorRouter = require('./routes/visitorRouter');
+var index = require('./routes/index');
 
 const url = config.mongoUrl;
 const connect = mongoose.connect(url, {useNewUrlParser : true, useUnifiedTopology : true});
@@ -18,7 +18,7 @@ connect.then((db)=>{
 const hostname='localhost';
 const port = 3000;
 
-app.use('/', visitorRouter);
+app.use('/', index.router);
 
 
 const server = http.createServer(app);

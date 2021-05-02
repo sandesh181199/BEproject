@@ -23,7 +23,8 @@ var User = new Schema({
     },
     email_id:{
         type:String,
-        default :''
+        default :'',
+        unique : true
     },
     mobile_number:{
         type:Number,
