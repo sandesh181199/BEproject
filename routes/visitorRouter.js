@@ -116,7 +116,7 @@ router.route('/newvisitor')
     }
     numberplate.create(newVisitor)
     .then(data=> {
-        console.log("Society created" + data);
+        console.log("New Visitor Created" + data);
         res.statusCode = 200;
         res.setHeader('content-type','application/json');
         res.json(data);
