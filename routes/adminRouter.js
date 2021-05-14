@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const users = require('../models/users');
 const jwt = require('jsonwebtoken');
 var config = require('../config');
+const { verifyToken } = require('../middlewares/verifyToken');
 
 
 
@@ -47,7 +48,11 @@ router.route('/getallusers')
 
 
 //Dashboard
-
+router.route('/getUserInfo')
+.get(verifyToken,(req,res,next)=>{
+    console.log('getuserInfo');
+    return res.status(200).json({payload : req.payload});
+})
 //getAllUsers
 
 //getAllVisitors
