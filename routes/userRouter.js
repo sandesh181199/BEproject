@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const users = require('../models/users');
 const jwt = require('jsonwebtoken');
-var config = require('../config');
+const config = require('../config');
+const verifyToken = require('../middlewares/verifyToken')
 
 
 
@@ -51,7 +52,8 @@ router.route('/login')
                     jwt.sign({
                         userid: data[0]._id,
                         email_id : data[0].email_id,
-                        mobile_number : data[0].mobile_number
+                        mobile_number : data[0].mobile_number,
+                        society_name : data[0].society_name
                     }, config.secretKey, (error, token) => {
                         if (error) {
                             console.log(error);
@@ -64,6 +66,8 @@ router.route('/login')
                     });
                 }
             })
+        }).catch(err => {
+            res.status(500).json({message : err.message});
         })
     })
 

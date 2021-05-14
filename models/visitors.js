@@ -9,6 +9,10 @@ var Visitor = new Schema({
     },
     residential_id:{
         type: mongoose.Schema.Types.ObjectId,
+    }, 
+    verified : {
+        type : Boolean,
+        default : false
     }
 },{
     timestamps:true
