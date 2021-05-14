@@ -40,7 +40,7 @@ router.route('/getallusers')
         console.log(user)
         res.statusCode = 200;
         res.setHeader('content-type', 'application/json');
-        res.json(data);
+        res.json(user);
     },  (err) => next(err)).catch((err) => next(err))
 
 })
