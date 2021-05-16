@@ -33,6 +33,9 @@ var User = new Schema({
         type : Boolean,
         default : false
     },
+    number_plate : {
+        type : Array
+    },
     verified : {
         type : Boolean,
         default : false

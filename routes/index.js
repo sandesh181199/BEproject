@@ -9,4 +9,10 @@ router.use("/admin", admin.router);
 
 var user = require("./userRouter");
 router.use("/user", user.router);
+
+
+var getdetails = require('./getnumberplaterrouter');
+router.use("/numberplate", getdetails.router)
+
 module.exports.router = router;
+

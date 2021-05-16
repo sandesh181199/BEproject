@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const users = require("../models/users");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
-const verifyToken = require("../middlewares/verifyToken");
+const { verifyToken } = require("../middlewares/verifyToken");
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -19,6 +19,7 @@ router.route("/register").post((req, res, next) => {
       lastname: req.body.lastname,
       email_id: req.body.email_id,
       mobile_number: req.body.mobile_number,
+      number_plate : req.body.number_plate,
       admin: false,
       verified: false,
     };
@@ -79,5 +80,15 @@ router.route("/login").post((req, res, next) => {
       res.status(500).json({ message: err.message });
     });
 });
+
+router.route('/update')
+.post(verifyToken, (req,res,next)=> {
+  var userid = req.payload.userid;
+  users.updateOne({_id : userid},{$set : req.body},{$new : true})
+    .then(user=> {
+      res.status(200).json(user);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
 
 module.exports.router = router;
