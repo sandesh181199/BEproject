@@ -143,7 +143,6 @@ router.route("/getRecentVisitor").get(verifyToken, (req, res, next) => {
 //Dashboard
 router.route("/getUserInfo").get(verifyToken, (req, res, next) => {
   console.log("getuserInfo");
-  console.log(req.payload.userid);
   users
     .findOne({ mobile_number: req.payload.mobile_number })
     .select({ password: 0, residential_id: 0 })
@@ -155,13 +154,6 @@ router.route("/getUserInfo").get(verifyToken, (req, res, next) => {
     )
     .catch((err) => next(err));
 });
-//getAllUsers
-
-//getAllVisitors
-
-//get Unverified users
-
-//totalvisitorcounthours
 
 router.route("/getcount").get(verifyToken, (req, respond, next) => {
   residential_id = req.payload.residential_id;
@@ -264,6 +256,8 @@ router.route("/verifyusers").post(verifyToken, (req, res, next) => {
 });
 
 router.route("/graph").get(verifyToken, (req, res, next) => {
+  let residential_id = req.payload.residential_id;
+  console.log(new Date(Date.now() - 24 * 60 * 60 * 1000));
   visitors
     .aggregate([
       {
@@ -273,23 +267,29 @@ router.route("/graph").get(verifyToken, (req, res, next) => {
       },
       {
         $project: {
-          hour: {
+          realHour: {
             $hour: "$createdAt",
+          },
+          diff: {
+            $hour: new Date(Date.now() - 24 * 60 * 60 * 1000),
           },
         },
       },
       {
         $group: {
-          _id: { hours: "$hour" },
+          _id: {
+            $subtract: ["$realHour", "$diff"],
+          },
           count: { $sum: 1 },
         },
       },
     ])
     .then((visitor) => {
+      console.log(visitor);
       let newData = [];
       for (let i = 0; i < visitor.length; i++) {
-        if (visitor[i]._id.hours) {
-          newData[visitor[i]._id.hours] = visitor[i].count;
+        if (visitor[i]._id || visitor[i]._id === 0) {
+          newData[visitor[i]._id] = visitor[i].count;
         }
       }
       for (let i = 0; i < 24; i++) {
@@ -300,6 +300,24 @@ router.route("/graph").get(verifyToken, (req, res, next) => {
       console.log(newData);
       res.status(200).json(newData);
     });
+});
+
+router.route("/profileUpdate").post(verifyToken, (req, res, next) => {
+  var mobile_number = req.payload.mobile_number;
+  console.log(req.body);
+  users
+    .updateOne(
+      { mobile_number: mobile_number },
+      { $set: req.body.users },
+      { $new: true }
+    )
+    .then(
+      (user) => {
+        res.status(200).json(user);
+      },
+      (err) => next(err)
+    )
+    .catch((err) => next(err));
 });
 
 module.exports.router = router;
