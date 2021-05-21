@@ -21,7 +21,7 @@ router.route("/login").post((req, res, next) => {
           res.status(503).json({
             message: "Bcryptjs Error",
           });
-        } else if (verify === false) {
+        } else if (verify === false || data[0].admin == false) {
           res.status(400).json({
             message: "Wrong Username or Password",
           });
