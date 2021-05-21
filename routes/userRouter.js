@@ -92,15 +92,16 @@ router.route('/update')
     .catch((err) => next(err));
 })
 
-router.route('/reistervisitor')
+router.route('/registervisitor')
 .post(verifyToken, (req,res,next)=> {
   var userid = req.payload.userid;
+  const {visitor} = req.body
   const newVisitor = {
-    first_name : req.body.first_name,
-    last_name : req.body.last_name,
-    mobile_number : req.body.mobile_number,
-    email_id : req.body.email_id,
-    expected_date : req.body.expected_date,
+    first_name : visitor.firstname,
+    last_name : visitor.lastname,
+    mobile_number : visitor.mobile_number,
+    email_id : visitor.email_id,
+    expected_date : visitor.expected_date,
     user_id : userid
   }
   registeredVisitor

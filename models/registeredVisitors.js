@@ -23,11 +23,11 @@ var registeredVisitor = new Schema({
     expected_date : {
         type: Date,
         default: null
-    },
-    user_id:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref : User
     }
+    // user_id:{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref : User
+    // }
 },{
     timestamps:true
 });
