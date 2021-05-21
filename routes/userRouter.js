@@ -5,6 +5,7 @@ const users = require("../models/users");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 const { verifyToken } = require("../middlewares/verifyToken");
+const registeredVisitor = require('../models/registeredVisitors')
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -90,5 +91,28 @@ router.route('/update')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
+
+router.route('/reistervisitor')
+.post(verifyToken, (req,res,next)=> {
+  var userid = req.payload.userid;
+  const newVisitor = {
+    first_name : req.body.first_name,
+    last_name : req.body.last_name,
+    mobile_number : req.body.mobile_number,
+    email_id : req.body.email_id,
+    expected_date : req.body.expected_date,
+    user_id : userid
+  }
+  registeredVisitor
+  .create(newVisitor)
+  .then(visitor=> {
+    console.log("New Visitor Registered" + visitor);
+    res.statusCode = 200;
+    res.setHeader("content-type", "application/json");
+    res.json(visitor);
+  })
+})
+
+router.route('')
 
 module.exports.router = router;
