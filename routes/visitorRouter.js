@@ -5,14 +5,19 @@ const residential = require("../models/residential");
 const visitors = require("../models/visitors");
 const numberplate = require("../models/visitors");
 // const cors = require('./cors');
+const axios = require('axios');
+const { response } = require("express");
+const registeredVisitor = require('../models/registeredVisitors')
 
 const router = express.Router();
 router.use(bodyParser.json());
 
-router.route("/checkvisitors").post((req, res, next) => {
+router.route("/checkvisitors")
+.post((req, res, next) => {
   // console.log("Inside checkvisitor")
   var numberplate = req.body.numberplate;
-  var residential_id = req.body.residential_id;
+  console.log(numberplate)
+  var residential_id = "608d6f00011dbc9826b29520";
   //    User.find({residential_id:residential_id})
   //     .then(result=>{
   //         // User.find({numberplate : numberplate})
@@ -42,35 +47,72 @@ router.route("/checkvisitors").post((req, res, next) => {
   //         }
   //     },(err) => next(err)).catch((err)=> next(err))
 
-  User.find({ numberplate: numberplate })
+  User.find({ number_plate:  {$eq : numberplate}})
     .then(
       (result) => {
-        console.log(result.length);
         if (result.length == 0) {
-          console.log(false);
-          var newVisitor = {
-            visitor_number_plate: numberplate,
-            residential_id,
-          };
-          visitors
-            .create(newVisitor)
-            .then(
-              (response) => {
-                res.statusCode = 200;
-                res.setHeader("content-type", "application/json");
-                res.json({ Resident: false, Visitor: response });
-              },
-              (err) => next(err)
-            )
-            .catch((err) => next(err));
+          axios.post("http://127.0.0.1:3000/numberplate/getdetails", {
+            numberplate : numberplate
+          })
+          .then(response=> {
+            var data = response.data[0]
+            registeredVisitor
+            .find({mobile_number : data.mobile_number })
+            .then(result=> {
+              console.log("INSIDE RESULT"+result.length)
+              if(result.length!=0)
+              {
+                var newVisitor = {
+                  visitor_number_plate: numberplate,
+                  residential_id,
+                  verified : true
+                };
+                   visitors
+                    .create(newVisitor)
+                  .then(
+                  (response) => {
+                      res.statusCode = 200;
+                      res.setHeader("content-type", "application/json");
+                      res.json({ Resident: false, Visitor: response });
+                      registeredVisitor.deleteOne({mobile_number : data.mobile_number})
+                      .then(res=> {
+                        console.log("VISITOR DELETED FROM REGISTERED VISITOR" + res)
+                      })
+                  },(err) => next(err)
+              )
+              .catch((err) => next(err));
+              }
+              else{
+                var newVisitor = {
+                  visitor_number_plate: numberplate,
+                  residential_id,
+                  verified : false
+                };
+                   visitors
+                    .create(newVisitor)
+                  .then(
+                  (response) => {
+                      res.statusCode = 200;
+                      res.setHeader("content-type", "application/json");
+                      res.json({ Resident: false, Visitor: response });
+                  },(err) => next(err)
+              )
+              .catch((err) => next(err));
+              }            
+            })
+            
+          })
+          .catch(err=> {
+            console.log("ERRROR"+err)
+          })
         } else {
           console.log(true);
           res.statusCode = 200;
           res.setHeader("content-type", "application/json");
           res.json({ Resident: true });
         }
-      },
-      (err) => next(err)
+      }
+      // (err) => next(err)
     )
     .catch((err) => next(err));
 });

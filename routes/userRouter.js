@@ -99,7 +99,7 @@ router.route('/registervisitor')
   const newVisitor = {
     first_name : visitor.firstname,
     last_name : visitor.lastname,
-    mobile_number : visitor.mobile_number,
+    mobile_number : Number(visitor.mobile_number),
     email_id : visitor.email_id,
     expected_date : visitor.expected_date,
     user_id : userid
@@ -112,6 +112,22 @@ router.route('/registervisitor')
     res.setHeader("content-type", "application/json");
     res.json(visitor);
   })
+})
+
+
+router.route('/addnumberplate')
+.post(verifyToken, (req,res,next)=> {
+  var userid = req.payload.userid;
+  var numberplate = req.body.number_plate;
+
+  users.findByIdAndUpdate(userid,
+      { "$push": { "number_plate": numberplate } },
+      { "new": true, "upsert": true },
+      function (err, managerparent) {
+          if (err) throw err;
+          res.status(200).json({success : true});
+      }
+  );
 })
 
 router.route('')

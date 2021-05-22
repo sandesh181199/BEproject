@@ -129,7 +129,7 @@ router.route("/getRecentVisitor").get(verifyToken, (req, res, next) => {
   residential_id = req.payload.residential_id;
   visitors
     .find({ residential_id: residential_id })
-    .sort({ createdAt: 1 })
+    .sort({ createdAt: -1 })
     .limit(20)
     .then(
       (visitor) => {

@@ -15,7 +15,6 @@ router.route("/getdetails")
     const numberplate = req.body.numberplate;
     globalnumberplate.find({number_plate:numberplate})
     .then((info)=> {
-        console.log(info)
         res.status(200).json(info);
     }, (err) => next(err))
     .catch((err) => next(err));  

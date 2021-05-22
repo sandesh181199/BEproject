@@ -21,7 +21,7 @@ var globalnumberplate = new Schema({
     },
     mobile_number:{
         type:Number,
-        unique:true
+        unique:false
     }
 });
 
