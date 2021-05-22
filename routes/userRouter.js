@@ -5,7 +5,7 @@ const users = require("../models/users");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 const { verifyToken } = require("../middlewares/verifyToken");
-const registeredVisitor = require('../models/registeredVisitors')
+const registeredVisitor = require("../models/registeredVisitors");
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -20,7 +20,7 @@ router.route("/register").post((req, res, next) => {
       lastname: req.body.lastname,
       email_id: req.body.email_id,
       mobile_number: req.body.mobile_number,
-      number_plate : req.body.number_plate,
+      number_plate: req.body.number_plate,
       admin: false,
       verified: false,
     };
@@ -82,37 +82,69 @@ router.route("/login").post((req, res, next) => {
     });
 });
 
-router.route('/update')
-.post(verifyToken, (req,res,next)=> {
-  var userid = req.payload.userid;
-  users.updateOne({_id : userid},{$set : req.body},{$new : true})
-    .then(user=> {
-      res.status(200).json(user);
-    }, (err) => next(err))
+router.route("/getUserInfo").get(verifyToken, (req, res, next) => {
+  console.log("getuserInfo");
+  users
+    .findOne({ mobile_number: req.payload.mobile_number })
+    .select({ password: 0, residential_id: 0 })
+    .then(
+      (user) => {
+        res.status(200).json(user);
+      },
+      (err) => next(err)
+    )
     .catch((err) => next(err));
-})
+});
 
-router.route('/registervisitor')
-.post(verifyToken, (req,res,next)=> {
+router.route("/profileUpdate").post(verifyToken, (req, res, next) => {
+  var mobile_number = req.payload.mobile_number;
+  console.log(req.body);
+  users
+    .updateOne(
+      { mobile_number: mobile_number },
+      { $set: req.body.users },
+      { $new: true }
+    )
+    .then(
+      (user) => {
+        res.status(200).json(user);
+      },
+      (err) => next(err)
+    )
+    .catch((err) => next(err));
+});
+
+router.route("/registervisitor").post(verifyToken, (req, res, next) => {
   var userid = req.payload.userid;
-  const {visitor} = req.body
+  const { visitor } = req.body;
   const newVisitor = {
-    first_name : visitor.firstname,
-    last_name : visitor.lastname,
-    mobile_number : Number(visitor.mobile_number),
-    email_id : visitor.email_id,
-    expected_date : visitor.expected_date,
-    user_id : userid
-  }
-  registeredVisitor
-  .create(newVisitor)
-  .then(visitor=> {
+    first_name: visitor.firstname,
+    last_name: visitor.lastname,
+    mobile_number: visitor.mobile_number,
+    email_id: visitor.email_id,
+    expected_date: visitor.expected_date,
+    user_id: userid,
+  };
+  registeredVisitor.create(newVisitor).then((visitor) => {
     console.log("New Visitor Registered" + visitor);
     res.statusCode = 200;
     res.setHeader("content-type", "application/json");
     res.json(visitor);
-  })
-})
+  });
+});
+
+router.route("/getVehicles").get(verifyToken, (req, res, next) => {
+  users
+    .findOne({ mobile_number: req.payload.mobile_number })
+    .select({ number_plate: 1 })
+    .then((numbers) => {
+      res.status(200).json(numbers);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err.message });
+      console.log(err);
+    });
+});
 
 
 router.route('/addnumberplate')
