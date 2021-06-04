@@ -56,7 +56,9 @@ router.route("/checkvisitors")
           })
           .then(response=> {
             var data = response.data[0]
-            registeredVisitor
+            if(data.mobile_number)
+            {
+              registeredVisitor
             .find({mobile_number : data.mobile_number })
             .then(result=> {
               console.log("INSIDE RESULT"+result.length)
@@ -74,6 +76,7 @@ router.route("/checkvisitors")
                       res.statusCode = 200;
                       res.setHeader("content-type", "application/json");
                       res.json({ Resident: false, Visitor: response });
+                      console.log("Response: ", response)
                       registeredVisitor.deleteOne({mobile_number : data.mobile_number})
                       .then(res=> {
                         console.log("VISITOR DELETED FROM REGISTERED VISITOR" + res)
@@ -92,6 +95,7 @@ router.route("/checkvisitors")
                     .create(newVisitor)
                   .then(
                   (response) => {
+                      console.log("Respose: ", response)
                       res.statusCode = 200;
                       res.setHeader("content-type", "application/json");
                       res.json({ Resident: false, Visitor: response });
@@ -100,10 +104,10 @@ router.route("/checkvisitors")
               .catch((err) => next(err));
               }            
             })
-            
+            }
           })
           .catch(err=> {
-            console.log("ERRROR"+err)
+            // console.log("ERRROR"+err)
           })
         } else {
           console.log(true);
@@ -114,7 +118,7 @@ router.route("/checkvisitors")
       }
       // (err) => next(err)
     )
-    .catch((err) => next(err));
+    .catch((err) => console.log(err));
 });
 
 router.route("/postusers").post((req, res, next) => {
